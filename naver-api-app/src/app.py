@@ -15,9 +15,9 @@ st.set_page_config(
 
 # 세션 상태 초기화
 if "client_id" not in st.session_state:
-    st.session_state["client_id"] = os.getenv("NAVER_CLIENT_ID", "")
+    st.session_state["client_id"] = os.getenv("NAVER_CLIENT_ID") or st.secrets.get("client_id", "")
 if "client_secret" not in st.session_state:
-    st.session_state["client_secret"] = os.getenv("NAVER_CLIENT_SECRET", "")
+    st.session_state["client_secret"] = os.getenv("NAVER_CLIENT_SECRET") or st.secrets.get("client_secret", "")
 
 
 # 사이드바 설정
