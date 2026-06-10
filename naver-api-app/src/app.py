@@ -1,4 +1,9 @@
 import streamlit as st
+import os
+from dotenv import load_dotenv, find_dotenv
+
+# .env 파일 로드
+load_dotenv(find_dotenv())
 
 # 페이지 설정
 st.set_page_config(
@@ -10,9 +15,10 @@ st.set_page_config(
 
 # 세션 상태 초기화
 if "client_id" not in st.session_state:
-    st.session_state["client_id"] = ""
+    st.session_state["client_id"] = os.getenv("NAVER_CLIENT_ID", "")
 if "client_secret" not in st.session_state:
-    st.session_state["client_secret"] = ""
+    st.session_state["client_secret"] = os.getenv("NAVER_CLIENT_SECRET", "")
+
 
 # 사이드바 설정
 st.sidebar.title("🔑 네이버 API 인증 설정")
