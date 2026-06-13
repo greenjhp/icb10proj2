@@ -69,13 +69,56 @@ st.markdown(
     """
 )
 
+apply_custom_style()
+
+# 공통 스타일 주입 함수 (네이버 그린 테마 및 카드 디자인)
+def apply_custom_style():
+    st.markdown(
+        """
+        <style>
+        /* 네이버 그린 버튼 스타일 */
+        div.stButton > button:first-child {
+            background-color: #03C75A !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 6px !important;
+            padding: 0.5rem 1rem !important;
+            font-weight: bold !important;
+            transition: all 0.2s ease-in-out !important;
+        }
+        div.stButton > button:first-child:hover {
+            background-color: #02b34a !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(3, 199, 90, 0.3) !important;
+        }
+        /* 메트릭 카드 프리미엄 스타일 */
+        div[data-testid="metric-container"] {
+            background-color: #1a1c23 !important;
+            border: 1px solid #2d3139 !important;
+            padding: 20px !important;
+            border-radius: 10px !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15) !important;
+        }
+        /* 메트릭 값 강조 */
+        div[data-testid="stMetricValue"] {
+            color: #03C75A !important;
+            font-size: 1.8rem !important;
+            font-weight: 700 !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 # 공통 인증 키 검증 함수
 def check_api_keys():
     """API 키가 입력되었는지 확인하고 검증하는 함수"""
+    apply_custom_style()  # 페이지 로드시 공통 스타일 자동 적용
     if not st.session_state["client_id"] or not st.session_state["client_secret"]:
         st.warning("⚠️ 왼쪽 사이드바에서 네이버 API Client ID와 Client Secret을 먼저 입력해주세요.")
         st.info("💡 네이버 개발자 센터(https://developers.naver.com/)에서 애플리케이션을 등록하시면 키를 발급받을 수 있습니다.")
         st.stop()
+
 
 # 공통 헤더 반환 함수
 def get_headers():

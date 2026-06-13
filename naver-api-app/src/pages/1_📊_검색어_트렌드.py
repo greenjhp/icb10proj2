@@ -158,25 +158,6 @@ if submit_button:
                     
                     st.success("데이터를 성공적으로 수집했습니다!")
                     
-                    # 시각화 영역
-                    st.subheader("📈 기간별 검색 트렌드 추이")
-                    st.caption("가장 검색량이 많았던 시점의 값을 100으로 기준하여 상대적인 변화를 보여줍니다.")
-                    
-                    fig = px.line(
-                        plot_df,
-                        x="period",
-                        y="상대검색량",
-                        color="검색어",
-                        labels={"period": "기간", "상대검색량": "상대적 검색량 (%)"},
-                        title=f"검색어 트렌드 비교 ({start_date} ~ {end_date})",
-                        markers=True if time_unit_val == "month" else False
-                    )
-                    fig.update_layout(hovermode="x unified")
-                    st.plotly_chart(fig, use_container_width=True)
-                    
-                    # 데이터 요약 정보 및 테이블
-                    st.subheader("📋 수집 데이터 분석 요약")
-                    
                     # 각 키워드별 평균/최대값 계산
                     summary_data = []
                     for kw in keywords:
@@ -188,6 +169,53 @@ if submit_button:
                                 "최소 검색량": final_df[kw].min()
                             })
                     summary_df = pd.DataFrame(summary_data)
+                    
+                    # 📌 상단 요약 st.metric 카드 추가 (UX/UI 리서처 제안)
+                    st.subheader("📌 핵심 요약 지표")
+                    cols = st.columns(len(summary_df))
+                    for i, row in summary_df.iterrows():
+                        kw_name = row["검색어"]
+                        max_val = row["최대 검색량"]
+                        mean_val = row["평균 검색량"]
+                        
+                        # 최대 검색량이 발생한 날짜 찾기
+                        max_row = final_df[final_df[kw_name] == max_val]
+                        max_period = max_row["period"].values[0] if not max_row.empty else "N/A"
+                        
+                        with cols[i]:
+                            st.metric(
+                                label=f"{kw_name} 트렌드",
+                                value=f"{mean_val}% / {max_val}%",
+                                delta=f"최대 발생일: {max_period}",
+                                delta_color="normal"
+                            )
+                    
+                    # 시각화 영역
+                    st.subheader("📈 기간별 검색 트렌드 추이")
+                    st.caption("가장 검색량이 많았던 시점의 값을 100으로 기준하여 상대적인 변화를 보여줍니다.")
+                    
+                    # 네이버 그린 포인트를 포함한 커스텀 컬러 테마 적용
+                    custom_colors = ["#03C75A", "#3b82f6", "#ef4444", "#f59e0b", "#8b5cf6"]
+                    
+                    fig = px.line(
+                        plot_df,
+                        x="period",
+                        y="상대검색량",
+                        color="검색어",
+                        color_discrete_sequence=custom_colors,
+                        labels={"period": "기간", "상대검색량": "상대적 검색량 (%)"},
+                        title=f"검색어 트렌드 비교 ({start_date} ~ {end_date})",
+                        markers=True if time_unit_val == "month" else False
+                    )
+                    fig.update_layout(
+                        hovermode="x unified",
+                        plot_bgcolor="rgba(0,0,0,0)",
+                        paper_bgcolor="rgba(0,0,0,0)"
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+                    
+                    # 데이터 요약 정보 및 테이블
+                    st.subheader("📋 수집 데이터 분석 요약")
                     st.dataframe(summary_df, use_container_width=True, hide_index=True)
                     
                     st.subheader("📄 상세 데이터 내역")
@@ -201,6 +229,7 @@ if submit_button:
                         file_name=f"naver_search_trend_{start_date}_{end_date}.csv",
                         mime="text/csv"
                     )
+
                     
             else:
                 st.error(f"❌ API 호출 실패 (상태 코드: {response.status_code})")
