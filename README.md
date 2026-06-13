@@ -1,3 +1,15 @@
+# 📊 네이버 API 통합 분석 대시보드 프로젝트
+
+## 🚀 서비스 접속 주소
+* **Streamlit 배포 주소**: [https://icb10proj2-greenjhp.streamlit.app/](https://icb10proj2-greenjhp.streamlit.app/)
+
+## 🛠️ 최근 작업 내역
+* **자동 커밋 및 푸시 환경 구축**:
+  * 커밋 성공 시 원격 저장소로 자동 푸시하는 Git `post-commit` 훅 설정 완료
+  * 변경 사항을 감지하여 한 번에 커밋을 진행하는 자동화 스크립트([auto-commit-push.sh](auto-commit-push.sh)) 추가 완료
+
+---
+
 ## STEP 0. 팀 구성 및 협업 환경 세팅
 
 ### 슬랙 세팅
